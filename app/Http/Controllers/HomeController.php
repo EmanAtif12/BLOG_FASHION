@@ -1,77 +1,115 @@
 <?php
-// namespace helps with organizing code and avoiding naming conflicts.
+
 namespace App\Http\Controllers;
 
-// Import necessary classes.
-use Illuminate\Http\Request; // Handles HTTP
-use App\Models\User; // Imports the User model for interacting with the users table in the database.
-use Illuminate\Support\Facades\Auth; // Provides authentication functionalities.
+use App\Models\Post;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Category;
 
-// Define the HomeController class, which extends the base Controller class.
+
 class HomeController extends Controller
 {
-    public function index()  // Define index method, which is the default action for controller.
-
+    /**
+     * Redirect users to the appropriate dashboard based on their user type.
+     */
+    public function index()
     {
-        if (Auth::check())// user authentication 
-        {
-            // Retrieve the authenticated user's type.
+        if (Auth::check()) {
             $usertype = Auth::user()->usertype;
 
-            if ($usertype == 'user') // reg user dashboard
-            {
-                return view('dashboard'); // Load the 'dashboard' view.
-            } 
-            elseif ($usertype == 'admin') //admin user dashboard
-            {
-                return view('admin.dashboard'); // Load the 'admin.dashboard' view.
+            switch ($usertype) {
+                case 'user':
+                    return redirect()->route('user.dashboard');
+                case 'admin':
+                    return redirect()->route('admin.dashboard');
+                default:
+                    return redirect()->route('login'); // Fallback for unknown types
             }
-        } 
-        else 
-        {
-            // If not authenticated, redirect the user to the login page.
-            return redirect()->route('login'); 
         }
+
+        return redirect()->route('login'); // Redirect to login if not authenticated
     }
 
-    // Define a method to load the homepage view.
-    public function homepage()
+    /**
+     * Display the homepage.
+
+     */
+
+     public function homepage()
     {
-        return view('home.homepage'); // Load the 'home.homepage' view.
+        return view('home.homepage');
     }
-    
-    public function aboutus()
+
+    /**
+     * Display the About Us page.
+     */
+    public function aboutUs()
     {
-        return view('home.aboutus'); 
+        return view('home.aboutus');
     }
-    
+
+    /**
+     * Display the Contact page.
+     */
     public function contact()
     {
-        return view('home.contact'); 
+        return view('home.contact');
     }
+
+    /**
+     * Display the Blog page.
+     */
     public function blogPage()
     {
-        return view('home.blogPage'); 
+        return view('home.blogPage');
     }
+
+    /**
+     * Display the Services page with all posts.
+     * 
+     */
     
     public function servicespage()
     {
-        return view('home.servicespage'); // Load the 'home.servicespage' view.
+        $posts = Post::all(); // Fetch all posts
+        //dd($posts);
+        return view('home.servicespage', compact('posts'));
     }
-    
-    // Define a method to load the personal styling service page view.
+
+    /**
+     * Display the Personal Styling service page.
+     */
     public function personalStyling()
     {
-        return view('home.personal-styling'); 
+        return view('home.personal-styling');
     }
 
+    /**
+     * Display the Personal Shopping service page.
+     */
     public function personalShopping()
     {
-        return view('home.personal-shopping'); 
+        return view('home.personal-shopping');
     }
 
-    public function customtailoring()
+    /**
+     * Display the Custom Tailoring service page.
+     */
+    public function customTailoring()
     {
-        return view('home.custom-tailoring'); 
+        return view('home.custom-tailoring');
     }
+    public function fixCategoryIds()
+    {
+        $posts = Post::all();
+        foreach ($posts as $post) {
+            $post->category_id = 1; // Assign a valid category ID
+            $post->save();
+        }
+    
+        return 'Category IDs fixed!';
+    }
+
+    
 }

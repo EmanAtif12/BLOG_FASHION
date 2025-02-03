@@ -1,16 +1,14 @@
 <x-web-layout>
-    <!-- Services section start -->
+    {{-- Import the CSS file --}}
+    <head>
+        <link rel="stylesheet" href="{{ asset('\public\css\style.css') }}">
+    </head>
+
+    {{-- Services section start --}}
     @include('home.services')
-    <!-- Services section end -->
+    {{-- Services section end --}}
 
-    <!-- About section start -->
+    {{-- About section start --}}
     @include('home.about')
-    <!-- About section end -->
-
-    <!-- Contact section start -->
-  
-    <!-- Contact section end -->
+    {{-- About section end --}}
 </x-web-layout>
-
-   
-
